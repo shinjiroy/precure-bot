@@ -1,0 +1,18 @@
+version: "3"
+services:
+  lambda:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+      - ./entrypoint.sh:/scripts/entrypoint.sh
+    working_dir: /app
+    entrypoint: /scripts/entrypoint.sh
+    command: app.handler
+    # environment:
+    #   - 
+  terraform:
+    image: alpine/terragrunt
+    volumes:
+      - .:/app
+    working_dir: /app
