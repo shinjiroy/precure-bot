@@ -14,7 +14,7 @@ services:
     entrypoint: /scripts/entrypoint.sh
     command: app.lambda_handler
     environment:
-      # /modulesはawslambdaric用
+      # /modulesはローカル用に入れたモジュール
       - PYTHONPATH=/modules:/app/modules
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
