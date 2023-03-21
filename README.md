@@ -11,16 +11,20 @@
 
 ## 利用手順
 
-1. `docker-compose run terraform sh -c "cd ./terraform && terraform apply"` でデプロイ
-2. 発行されるURLを `manifest.yml` の `request_url` に設定し、中身をコピーする。
-3. [slack api](https://api.slack.com/apps/)を開く。
-4. `Create an App` をクリックする。
-5. `From an app manifest` をクリックする。
-6. workspaceを選択し、 `Next` をクリックする。
+1. `docker-compose run installer` で必要なモジュールをインストールする。
+2. `docker-compose run terraform sh -c "cd ./terraform && terraform apply"` でデプロイ
+3. 発行されるURLを `manifest.yml` の `request_url` に設定し、中身をコピーする。
+4. [slack api](https://api.slack.com/apps/)を開く。
+5. `Create an App` をクリックする。
+6. `From an app manifest` をクリックする。
+7. workspaceを選択し、 `Next` をクリックする。
 
-## ローカルで実行
+## ローカルで確認
 
-1. `docker-compose run -p 9000:8080 lambda` で起動する。
-2. コンソールから `curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'` で確認する。
-3. 上記Slack Botの設定を行う。
-   1. `manifest.yml` の `request_url` には `http://localhost:9000/2015-03-31/functions/function/invocations` を設定する。
+※ngrokが使える状態になっていなければなりません。
+
+1. `docker-compose up -d lambda` で起動する。
+   1. 簡単に確認する時 `curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'`
+2. `ngrok http 9000` でlocalhostを一時的に公開する。
+3. [上記Slack Botの設定](#利用手順)を行う。
+   1. `manifest.yml` の `request_url` に `http://{ngrokで出来たホスト名}/2015-03-31/functions/function/invocations` を設定する。
