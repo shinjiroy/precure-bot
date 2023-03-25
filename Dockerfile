@@ -1,5 +1,3 @@
-ARG MODULE_DIR="/function"
-
 FROM python:3.9-buster
 
 RUN apt update && \
