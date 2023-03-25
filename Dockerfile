@@ -12,7 +12,7 @@ RUN apt update && \
 
 # ローカルでしか必要のないもの
 RUN mkdir /modules
-RUN pip install --target /modules awslambdaric
+RUN pip install --target /modules awslambdaric boto3
 
 ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/bin/aws-lambda-rie
 RUN chmod 775 /usr/bin/aws-lambda-rie
