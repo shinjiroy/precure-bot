@@ -2,7 +2,7 @@ import os
 import logging
 import json
 from slack_bolt import App
-from slack_bolt.adapter.flask import SlackRequestHandler
+from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 from bot.events.mention import main as mention
 
 logger = logging.getLogger()
@@ -29,11 +29,7 @@ def app_mention(event, say):
 
 def lambda_handler(event, context):
 
-    response = {
-        'statusCode': 200,
-        'body': 'test',
-    }
     logger.info(event)
     logger.info(context)
-    # response = handler.handle(event, context)
+    response = handler.handle(event, context)
     return response
