@@ -10,7 +10,7 @@ services:
     working_dir: /app
     tty: true
     ports:
-      - 9000:8080
+      - :8080
     entrypoint: /scripts/entrypoint.sh
     command: app.lambda_handler
     environment:
@@ -18,6 +18,12 @@ services:
       - PYTHONPATH=/modules:/app/modules
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+  lambda-func-url-proxy:
+    image: lambda-function-url-proxy
+    ports:
+      - 9000:80
+    environment:
+      - LAMBDA_REQUEST_URL=http://lambda:8080/2015-03-31/functions/function/invocations
   # pip install用
   installer:
     image: python:3.9-buster
@@ -25,8 +31,12 @@ services:
       - ./app:/src
     working_dir: /src
     command: bash -c "pip install --upgrade pip && pip install --target /src/modules --upgrade -r /src/requirements.txt"
+    profiles:
+      - install
   terraform:
     image: alpine/terragrunt
     volumes:
       - .:/app
     working_dir: /app
+    profiles:
+      - terraform
