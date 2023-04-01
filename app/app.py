@@ -10,6 +10,7 @@ logger.setLevel(logging.INFO)
 
 app = App(
     token=os.environ['SLACK_BOT_TOKEN'],
+    signing_secret=os.environ['SLACK_SIGNING_SECRET'],
     process_before_response=True,
 )
 handler = SlackRequestHandler(app)
@@ -22,14 +23,34 @@ def url_verification(event, say):
         'body': json.dumps({'challenge': event['challenge']})
     }
 
+@app.event('message')
+def message(event, say):
+    mention(event, say, app.client)
+    return {
+        'statusCode': 200,
+        'body': json.dumps({'message': 'message event'})
+    }
+
 # メンションがあった時の応答
 @app.event('app_mention')
 def app_mention(event, say):
-    mention(event, say)
+    mention(event, say, app.client)
+    return {
+        'statusCode': 200,
+        'body': json.dumps({'message': 'app_mention event'})
+    }
 
 def lambda_handler(event, context):
 
     logger.info(event)
-    logger.info(context)
+    # logger.info(context)
+
+    headers = event['headers']
+    if ('x-slack-retry-num' in headers):
+        return {
+            'statusCode': 200,
+            'body': json.dumps({'message': 'ignore retry'})
+        }
+
     response = handler.handle(event, context)
     return response
