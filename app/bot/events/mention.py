@@ -2,6 +2,7 @@ import logging
 import bot.core as core
 import re
 from slack_sdk.web import WebClient
+import bot.precure.service as precure
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -9,10 +10,6 @@ logger.setLevel(logging.DEBUG)
 def strip_angle_bracket_tags(str):
     # strから<>で囲まれた箇所(メンション)を削除する
     return re.sub(r'<[^>]*>', '', str)
-
-def is_calling(str):
-    # プリキュアを呼んでるメッセージかどうか
-    return re.search(r'([ァ-ヶー])*をよんで', str)
 
 # メンションされたときの処理
 def main(event, say, client: WebClient):
@@ -28,7 +25,7 @@ def main(event, say, client: WebClient):
 
         messages = []
         for reply in replies.get('messages'):
-            match = is_calling(reply['text'])
+            match = precure.is_calling(reply['text'])
             if match:
                 # プリキュア呼び出し時
                 messages.append({
@@ -52,7 +49,7 @@ def main(event, say, client: WebClient):
     else:
         # スレッドでない場合にはプリキュアを呼んでいる場合のみ考慮する
         # メンションされたテキストからプリキュアの名前を抽出する
-        match = is_calling(text)
+        match = precure.is_calling(text)
         if match:
             messages = [{
                 'role': 'system',
