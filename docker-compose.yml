@@ -34,6 +34,20 @@ services:
     command: bash -c "pip install --upgrade pip && pip install --target /src/modules --upgrade -r /src/requirements.txt"
     profiles:
       - install
+  exectest:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+    working_dir: /app/tests
+    environment:
+      # /modulesはローカル用に入れたモジュール
+      - PYTHONPATH=/modules:/app:/app/modules
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+    profiles:
+      - exectest
   terraform:
     image: alpine/terragrunt
     volumes:
