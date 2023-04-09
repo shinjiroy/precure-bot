@@ -17,7 +17,6 @@ handler = SlackRequestHandler(app)
 
 @app.event('url_verification')
 def url_verification(event, say):
-    logger.info('test2')
     return {
         'statusCode': 200,
         'body': json.dumps({'challenge': event['challenge']})
@@ -25,7 +24,7 @@ def url_verification(event, say):
 
 @app.event('message')
 def message(event, say):
-    mention(event, say, app.client)
+    # 何もしない
     return {
         'statusCode': 200,
         'body': json.dumps({'message': 'message event'})
@@ -43,8 +42,6 @@ def app_mention(event, say):
 def lambda_handler(event, context):
 
     logger.info(event)
-    # logger.info(context)
-
     headers = event['headers']
     if ('x-slack-retry-num' in headers):
         return {
