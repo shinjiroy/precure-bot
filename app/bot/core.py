@@ -20,10 +20,12 @@ def _generate_response(messages: list) -> str:
     except openai.error.APIError as e:
         print('OpenAI API error: ', e)
 
-def response(say, messages: list, thread_ts: str) -> None:
+def response(say, messages: list, thread_ts: str, precure_data: dict) -> None:
     res = _generate_response(messages)
     logger.info(res)
     say(
         text=res,
         thread_ts=thread_ts,
+        icon_emoji=precure_data['icon_emoji'],
+        username=precure_data['name'],
     )

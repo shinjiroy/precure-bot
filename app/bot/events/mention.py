@@ -24,11 +24,13 @@ def main(event, say, client: WebClient):
         ).validate()
 
         messages = []
+        precure_data = {}
         for reply in replies.get('messages'):
             precure_name = precure.get_calling_name(reply['text'])
             if precure_name:
                 # プリキュアを呼び出した時の入力の場合
-                messages.append(precure.call_message(precure_name))
+                messages.append(precure.get_call_message(precure_name))
+                precure_data = precure.get_data(precure_name)
             elif reply.get('bot_id'):
                 # botの入力の場合
                 messages.append({
@@ -42,15 +44,15 @@ def main(event, say, client: WebClient):
                     'role': 'user',
                     'content': strip_angle_bracket_tags(reply['text'])
                 })
-        core.response(say, messages, event['ts'])
+        core.response(say, messages, event['ts'], precure_data)
     else:
         # スレッドでない場合にはプリキュアを呼んでいる場合のみ考慮する
         # メンションされたテキストからプリキュアの名前を抽出する
         precure_name = precure.get_calling_name(text)
         if precure_name:
-            messages = [precure.call_message(precure_name)]
+            messages = [precure.get_call_message(precure_name)]
             # 会話スタート
-            core.response(say, messages, event['ts'])
+            core.response(say, messages, event['ts'], precure.get_data(precure_name))
         else:
             say(
                 text=f'すきなキャラクターのおなまえを「○○をよんで」とボットにおねがいしてね！',

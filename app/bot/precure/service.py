@@ -21,7 +21,10 @@ def get_calling_name(str):
         return match.group(1)
     return None
 
-def call_message(name):
+def get_data(name):
+    return data[name]
+
+def get_call_message(name):
     # プリキュアを呼ぶためのmessageを取得
     return {
         'role': 'system',
