@@ -19,19 +19,16 @@ def main(event, say, client: WebClient):
         # スレッドの場合には、スレッドのメッセージを取得して対話モードになるように組み立てる
         replies = client.conversations_replies(
             channel=event['channel'],
-            ts=event['ts'],
+            ts=event['thread_ts'],
             inclusive=True
         ).validate()
 
         messages = []
         for reply in replies.get('messages'):
-            match = precure.is_calling(reply['text'])
-            if match:
-                # プリキュア呼び出し時
-                messages.append({
-                    'role': 'system',
-                    'content': f'{match.group()}の口調で話して',
-                })
+            precure_name = precure.get_calling_name(reply['text'])
+            if precure_name:
+                # プリキュアを呼び出した時の入力の場合
+                messages.append(precure.call_message(precure_name))
             elif reply.get('bot_id'):
                 # botの入力の場合
                 messages.append({
@@ -49,11 +46,12 @@ def main(event, say, client: WebClient):
     else:
         # スレッドでない場合にはプリキュアを呼んでいる場合のみ考慮する
         # メンションされたテキストからプリキュアの名前を抽出する
-        match = precure.is_calling(text)
-        if match:
-            messages = [{
-                'role': 'system',
-                'content': f'{match.group()}の口調で話して',
-            }]
+        precure_name = precure.get_calling_name(text)
+        if precure_name:
+            messages = [precure.call_message(precure_name)]
             # 会話スタート
             core.response(say, messages, event['ts'])
+        else:
+            say(
+                text=f'すきなキャラクターのおなまえを「○○をよんで」とボットにおねがいしてね！',
+            )

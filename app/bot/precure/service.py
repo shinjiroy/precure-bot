@@ -14,9 +14,12 @@ with open(os.path.dirname(os.path.abspath(__file__)) + '/data.yml', 'r') as f:
 if data == {}:
     raise Exception('データファイルがありません。')
 
-def is_calling(str):
+def get_calling_name(str):
     # プリキュアを呼んでるメッセージかどうか
-    return re.search(r'([ァ-ヶー])*をよんで', str)
+    match = re.search(r'([ァ-ヶー]+)をよんで', str)
+    if match:
+        return match.group(1)
+    return None
 
 def call_message(name):
     # プリキュアを呼ぶためのmessageを取得

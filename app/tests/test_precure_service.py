@@ -15,5 +15,10 @@ class PrecureServiceTest(unittest.TestCase):
         print(precure.call_message(name))
         self.assertEqual(1, 1)
 
+    def test_get_calling_name(self):
+        str = 'モフルンをよんで'
+        name = precure.get_calling_name(str)
+        self.assertEqual('モフルン', name)
+
 if __name__ == "__main__":
     unittest.main()
