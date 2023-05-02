@@ -7,7 +7,7 @@
 ## 環境
 
 - AWS Lambda
-  - Python3.8
+  - Python3.9
 
 ## 利用手順
 
