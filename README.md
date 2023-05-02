@@ -12,7 +12,7 @@
 ## 利用手順
 
 1. `docker-compose run --rm installer` で必要なモジュールをインストールする。
-2. `docker-compose run --rm terraform sh -c "cd ./terraform && terraform apply"` でデプロイ
+2. `docker-compose run --rm terraform sh -c "cd ./terraform/aws && terraform apply"` でデプロイ
 3. 発行されるURLを `manifest.yml` の `request_url` に設定し、中身をコピーする。
 4. [slack api](https://api.slack.com/apps/)を開く。
 5. `Create an App` をクリックする。
