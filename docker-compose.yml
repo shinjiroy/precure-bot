@@ -48,6 +48,7 @@ services:
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
     profiles:
       - exectest
+    entrypoint: /usr/local/bin/python
   terraform:
     image: alpine/terragrunt
     volumes:

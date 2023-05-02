@@ -12,7 +12,7 @@ class PrecureServiceTest(unittest.TestCase):
 
     def test_call_message(self):
         name = 'モフルン'
-        print(precure.call_message(name))
+        print(precure.get_call_message(name))
         self.assertEqual(1, 1)
 
     def test_get_calling_name(self):

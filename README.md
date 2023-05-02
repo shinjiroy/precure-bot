@@ -31,4 +31,4 @@
 
 ### テストコード実行
 
-`docker-compose run --rm exectest python test_core.py` 等
+`docker-compose run --rm exectest unit/core_test.py` 等
