@@ -1,0 +1,58 @@
+version: "3"
+services:
+  # ローカルテスト用
+  lambda:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+      - ./entrypoint.sh:/scripts/entrypoint.sh
+    working_dir: /app
+    tty: true
+    ports:
+      - :8080
+    entrypoint: /scripts/entrypoint.sh
+    command: app.lambda_handler
+    environment:
+      # /modulesはローカル用に入れたモジュール
+      - PYTHONPATH=/modules:/app/modules
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+  lambda-func-url-proxy:
+    image: lambda-function-url-proxy
+    ports:
+      - 9000:80
+    environment:
+      - LAMBDA_REQUEST_URL=http://lambda:8080/2015-03-31/functions/function/invocations
+  # pip install用
+  installer:
+    image: python:3.9-buster
+    volumes:
+      - ./app:/src
+    working_dir: /src
+    command: bash -c "pip install --upgrade pip && pip install --target /src/modules --upgrade -r /src/requirements.txt"
+    profiles:
+      - install
+  exectest:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+    working_dir: /app/tests
+    environment:
+      # /modulesはローカル用に入れたモジュール
+      - PYTHONPATH=/modules:/app:/app/modules
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+    profiles:
+      - exectest
+    entrypoint: /usr/local/bin/python
+  terraform:
+    image: alpine/terragrunt
+    volumes:
+      - .:/app
+    working_dir: /app
+    profiles:
+      - terraform
